@@ -14,10 +14,6 @@ builder.Services.AddCors(options =>
                 .AllowAnyHeader()
                 .WithMethods("GET", "POST")
                 .AllowCredentials();
-            builder.WithOrigins("http://localhost:3001")
-             .AllowAnyHeader()
-             .WithMethods("GET", "POST")
-             .AllowCredentials();
         });
 });
 
