@@ -6,5 +6,6 @@ namespace WordFinder
     {
         Task NumPlayersCount(int count);
         Task SendRandomLetters(List<char> letters);
+        Task IsWordValid(bool valid);
     }
 }

@@ -23,5 +23,19 @@ namespace WordFinder.Hubs
             }
             
         }
+
+        public async Task ValidateWord(string word){
+            //database call needs to be implemented
+            string querySql = "SELECT * FROM Words WHERE word = " + word;
+            int result = 1; //result will actually be the result of the query
+
+            bool validWord;
+            if(result > 0){
+                validWord = true;
+            }else{
+                validWord = false;
+            }
+            await Clients.All.IsWordValid(validWord);
+        }
     }
 }
