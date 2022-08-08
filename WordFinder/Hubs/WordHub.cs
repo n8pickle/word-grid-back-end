@@ -7,25 +7,29 @@ namespace WordFinder.Hubs
     public class WordHub: Hub<IWordHubClient>
     {
         private static int count = 0;
-        private static int NerdleWinnerCount = 0;
-        private string player1 = "";
-        private string player2 = "";
-        private int player1Score = 0;
-        private int player2Score = 0;
-        public async Task NumPlayers()
+        private static string player1 = "";
+        private static string player2 = "";
+        private static int player1Score = 0;
+        private static int player2Score = 0;
+
+        public async Task NumPlayers(string username)
         {
             count++;
+            if (count == 1)
+            {
+                player1 = username;
+            }
+            if(count == 2)
+            {
+                player2 = username;
+            }
             await Clients.All.NumPlayersCount(count);
         }
         public async Task GetLetters()
         {
-            if (count == 2)
-            {
-                RandomLetter randomLetter = new RandomLetter();
-                List<char> letters = randomLetter.getLetters();
-                await Clients.All.SendRandomLetters(letters);
-            }
-            
+            RandomLetter randomLetter = new RandomLetter();
+            List<char> letters = randomLetter.getLetters();
+            await Clients.All.SendRandomLetters(letters);
         }
         public async Task IsValidWord(string word)
         {
@@ -35,13 +39,11 @@ namespace WordFinder.Hubs
         }
         public async Task NerdleWinner(string username, int score)
         {
-            if (NerdleWinnerCount == 0)
+            if (username == player1)
             {
-                player1 = username;
                 player1Score = score;
-                NerdleWinnerCount++;
             }
-            else
+            if(username == player2)
             {
                 player2 = username;
                 player2Score = score;
@@ -59,6 +61,12 @@ namespace WordFinder.Hubs
             else
                 winner = player2 + " WINS!";
             await Clients.All.SendNerdleWinner(winner);
+            
         }
+        public async Task OpponentFoundWord(string username)
+        {
+            await Clients.Others.SendOpponentFoundWord(username + " found a word.");
+        }
+     
     }
 }
