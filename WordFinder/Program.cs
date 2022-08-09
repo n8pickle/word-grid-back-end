@@ -1,9 +1,16 @@
+using System;
 using WordFinder.Hubs;
-var builder = WebApplication.CreateBuilder(args);
+using Database;
 
+using Microsoft.EntityFrameworkCore;
+
+
+var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration["DbConnectionString"];
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
+builder.Services.AddEntityFrameworkMySql().AddDbContext<MyDbContext>(options => options.UseMySql(connectionString, new MySqlServerVersion(new Version(10, 4, 13))));
 
 builder.Services.AddCors(options =>
 {
@@ -18,6 +25,7 @@ builder.Services.AddCors(options =>
              .AllowAnyHeader()
              .WithMethods("GET", "POST")
              .AllowCredentials();
+            builder.AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(__ => true).AllowCredentials();
         });
 });
 
@@ -31,7 +39,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();

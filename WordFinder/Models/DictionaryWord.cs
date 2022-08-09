@@ -1,6 +1,8 @@
 ﻿namespace WordFinder.Models
 {
-    public class DictionaryWords
+    public class DictionaryWord
     {
+        public int DictionaryWordID {get; set;}
+        public string Word {get; set;}
     }
 }
