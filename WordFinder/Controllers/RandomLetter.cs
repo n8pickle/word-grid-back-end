@@ -28,7 +28,7 @@
                 
                 dice.RemoveAt(index);
                 
-                if(ch == 'Q')
+                if(ch == 'Q' && i != 15)
                 {
                     letter.Add(ch);
                     letter.Add('U');
