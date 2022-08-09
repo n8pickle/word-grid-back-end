@@ -1,16 +1,21 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using WordFinder.Models;
+using Database;
 using WordFinder.Controllers;
 
 namespace WordFinder.Hubs
 {
     public class WordHub: Hub<IWordHubClient>
     {
+        private WordCheckerRepo _checkerRepo;
         private static int count = 0;
         private static string player1 = "";
         private static string player2 = "";
         private static int player1Score = 0;
         private static int player2Score = 0;
+
+        public WordHub(WordCheckerRepo checkerRepo) {
+            _checkerRepo = checkerRepo;
+        }
 
         public async Task NumPlayers(string username)
         {
@@ -33,9 +38,8 @@ namespace WordFinder.Hubs
         }
         public async Task IsValidWord(string word)
         {
-            //todo: make a check against the database to see if the word is valid.
-
-            await Clients.All.SendIsValidWord(true);
+            var wordIsValid = await _checkerRepo.checkIfWordExists(word);
+            await Clients.All.SendIsValidWord(wordIsValid);
         }
         public async Task NerdleWinner(string username, int score)
         {
