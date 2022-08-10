@@ -2,6 +2,7 @@ using Database;
 using WordFinder.Hubs;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 
 builder.Services.AddEntityFrameworkMySql().AddDbContext<MyDbContext>(options => options.UseMySql(connectionString, new MySqlServerVersion(new Version(10, 4, 13))));
+builder.Services.AddTransient<WordCheckerRepo, WordCheckerRepo>();
 
 builder.Services.AddCors(options =>
 	{
@@ -41,6 +43,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
 
 app.UseAuthorization();
 app.UseCors("CorsPolicy");
