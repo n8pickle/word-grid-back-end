@@ -12,6 +12,8 @@ namespace WordFinder.Hubs
         private static string player2 = "";
         private static int player1Score = 0;
         private static int player2Score = 0;
+        private List<string> player1List;
+        private List<string> player2List;
 
         public WordHub(WordCheckerRepo checkerRepo) {
             _checkerRepo = checkerRepo;
@@ -38,19 +40,28 @@ namespace WordFinder.Hubs
         }
         public async Task IsValidWord(string word)
         {
-            var wordIsValid = await _checkerRepo.checkIfWordExists(word);
-            await Clients.All.SendIsValidWord(wordIsValid);
+            string w = word.ToLower();
+            var wordIsValid = await _checkerRepo.checkIfWordExists(w);
+            await Clients.Caller.SendIsValidWord(!wordIsValid);
         }
-        public async Task NerdleWinner(string username, int score)
+        public async Task NerdleWinner(string username, int score, List<string> wordsFound)
         {
             if (username == player1)
             {
                 player1Score = score;
+                if (wordsFound != null)
+                {
+                    player1List = wordsFound;
+                }
+                
             }
             if(username == player2)
             {
-                player2 = username;
                 player2Score = score;
+                if (wordsFound != null)
+                {
+                    player2List = wordsFound;
+                }
             }
 
             string winner = "";
@@ -63,14 +74,12 @@ namespace WordFinder.Hubs
                 winner = player1 + " WINS!";
             }
             else
-                winner = player2 + " WINS!";
-            await Clients.All.SendNerdleWinner(winner);
-            
+                winner = player2 + " WINS!"; ;
+            await Clients.All.SendNerdleWinner(winner,player1,player2, player1Score, player2Score, player1List, player2List);
         }
-        public async Task OpponentFoundWord(string username)
+        public async Task FoundWord(string username)
         {
-            await Clients.Others.SendOpponentFoundWord(username + " found a word.");
-        }
-     
+            await Clients.Others.SendFoundWord(username + " found a word.");  
+        }     
     }
 }

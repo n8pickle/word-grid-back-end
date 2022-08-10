@@ -9,7 +9,7 @@ public class WordCheckerRepo {
 
     public async Task<bool> checkIfWordExists(string word) {
         if(word.Length < 3) {
-            return false;
+            return true;
         }
         var retrieved = await _dbContext.Words.FirstOrDefaultAsync((w) => w.Word == word);
         return retrieved == null;
